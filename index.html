@@ -1,0 +1,96 @@
+<html>
+<head>
+    <title>Markdown's Notebook</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <!-- Notebook app -->
+    <div id="notebookApp">
+
+        <!-- Sidebar -->
+        <aside class="side-bar">
+            <div class="toolbar">
+                <h3>Markdown's Notebook</h3>
+                <p>Una aplicación para crear notas en formato markdown.</p>
+                <p>by <a href="https://asilvabe.dev" target="_blank">asilvabe.dev</a></p>
+                
+                <button 
+                    @click="addNote" 
+                    :title="notes.length + ' note(s) already'"
+                    style="margin-top: 20;"
+                >
+                    <i class="material-icons">add</i>
+                    Nueva nota</button>
+            </div>
+            <div class="notes">
+                <div 
+                    class="note" 
+                    v-for="note of sortedNotes" 
+                    :class="{selected: note === selectedNote}"
+                    @click="selectNote(note)"
+                >
+                    {{ note.title ? note.title : 'Sin título' }}
+                    <i 
+                        class="icon material-icons"
+                        @click="removeNote(note)"
+                        title="Eliminar nota"
+                    >delete</i>
+                </div>
+            </div>
+        </aside>
+
+        <template v-if="selectedNote">
+
+            <!-- Main pane -->
+            <section class="main">
+                <div class="toolbar">
+                    <label for="title" style="color: #155679;">Título de la nota</label><br>
+                    <input 
+                        id="title" 
+                        v-model="selectedNote.title" 
+                        placeholder="Título de la nota"
+                        maxlength="25" />
+                </div>
+                <textarea v-model="selectedNote.content"></textarea>
+                <div class="toolbar status-bar">
+                    <span class="date">
+                        <span class="label">Creada</span>
+                        <span class="value">{{ selectedNote.created | date }}</span>
+                    </span>
+                    <span class="lines">
+                        <span class="label">Lineas</span>
+                        <span class="value">{{ linesCount }}</span>
+                    </span>
+                    <span class="words">
+                        <span class="label">Palabras</span>
+                        <span class="value">{{ wordsCount }}</span>
+                    </span>
+                    <span class="characters">
+                        <span class="label">Caracteres</span>
+                        <span class="value">{{ charactersCount }}</span>
+                    </span>
+                </div>
+            </section>
+
+            <!-- Preview pane -->
+            <aside class="preview" v-html="notePreview">
+            </aside>
+
+        </template>
+
+        <template v-else>
+            <h3 v-show="notes.length > 0">No hay ninguna nota seleccionada</h3>
+            <h3 v-show="notes.length === 0">No se han creado notas aún</h3>
+        </template>
+
+    </div>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/marked"></script>
+    <script src="https://unpkg.com/moment"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
